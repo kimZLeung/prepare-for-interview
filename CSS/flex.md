@@ -12,25 +12,24 @@
 
 > 这里暂时没有考虑极端情况，比如`flex-item` 撑爆容器
 
-在[别人的博客](https://www.w3cplus.com/css3/flexbox-layout-and-calculation.html)看到了以下的初始内容宽度的计算情况：
+```js
+/*
+在别人的博客看到了以下的初始内容宽度的计算情况：
 
 - flex-basis 的优先级比 width[height]: 非auto; 高，
 - 元素存在默认宽高，看默认宽高和flex-basis谁比较宽
 - 元素存在 min-width[height] 或者 max-width[height]，看min-width和flex-basis谁比较宽
 - width[height]: auto; 优先级等于 flex-basis。
-
+*/
+```
 
 
 总结一下：
 
-- 当只有默认宽度（没有设置width，flex-basis，min-width）时，初始内容宽度为默认宽度
-- 当有默认宽度和flex-basis时（没有设置width，min-width），看哪个长用哪个
-- 当声明了width，覆盖掉默认宽度并且声明了flex-basis（没有min-width），那就和flex-basis比谁长用谁
-- 当声明了min-width，覆盖掉默认宽度并声明flex-basis，那就和flex-basis比谁长用谁
-
-> width和min-width都会覆盖掉默认宽度，默认宽度没有被覆盖时，会和flex-basis比较，但是被覆盖之后，就要看覆盖它的那个宽度和flex-basis谁大谁小
-
-
+- 没有设置width，flex-basis，min-width时，只要`flex-item`内部没有超出flex-grow之后的字母或数字或内联元素（如input表单），则默认内容宽度其实是0
+- 设置width，只是给了`flex-item`一个最大的宽度限制，可以避免到出现上面的内联元素顶开`flex-item`的情况。然而这个最大宽度限制是对于被内部元素顶开这种情况而言的，并不会阻止`flex-grow`
+- 设置了`flex-basis`之后，`width`就没啥用了，想要限制最大最小宽度可以使用`min-width`和`max-width`
+- 总的来说影响初始内容宽度的，只有`flex-basis`，其余的问题都是因为内容顶出去了，或者`min-width`限制，而这两个因素都是直接把`flex-item`顶开的，而不是顶开初始内容宽度。
 
 
 
