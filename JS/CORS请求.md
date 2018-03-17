@@ -17,7 +17,6 @@ CORS需要浏览器和服务器同时支持，前端的同学可能认为跟同�
   - Accept
   - Accept-Language
   - Content-Language
-  - Last-Event-ID
   - Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain
 
 同时满足以上两个条件的就是简单请求。

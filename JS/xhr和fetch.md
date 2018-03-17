@@ -125,3 +125,83 @@ fetch('some/api/data.json', {
 }).then(function(response) { ... })
 ```
 
+
+
+### Fetch 实现了四个接口
+
+> Fetch 实现了四个接口：GlobalFetch、Headers、Request 和 Response。GloabaFetch 就只包含了一个 `fetch` 方法用于获取网络资源，其它三个直接对应了相应的 HTTP 概念。此外，在 request/reponse 中，还混淆了 Body。
+
+
+
+### Header
+
+可以通过`new Headers()`创建出来。一个 Headers 对象是一个简单的多名值对。Headers提供了`set`、`get`、`delete`、`append`等接口可以允许调用。
+
+> 出于安全原因，有些 header 字段的设置仅能通过 User Agent 实现，不能通过编程设置（比如说Origin头部）
+
+```js
+var h = new Headers()
+h.append('content-type', 'text/plain')
+h.has('content-type') 	//true
+h.set('content-type', 'text/html')
+h.get('content-type')	// text/html
+```
+
+
+
+### Request
+
+可以通过`new Request(url)`创建，url必须传入，第二个参数为`option`，和`fetch`的第二个参数同义
+
+```js
+var myHeaders = new Headers()
+
+var myInit = { method: 'GET',
+               headers: myHeaders,
+               mode: 'cors',
+               cache: 'default' ,
+               credentials: true
+             }
+
+var myRequest = new Request('flowers.jpg')
+
+fetch(myRequest,myInit)
+.then(function(response) {
+  return response.blob()
+})
+.then(function(myBlob) {
+  var objectURL = URL.createObjectURL(myBlob);
+  myImage.src = objectURL;
+})
+```
+
+创建一个`Request`对象可直接传入fetch第一个参数
+
+
+
+### Response
+
+`Response`实例是在 fentch() 处理完 promises 之后返回的，是then的resolve函数的参数。`Response`可以被创建，但只有在 ServiceWorkers 中才真正有用。（用于劫持fetch并且匹配缓存返回资源）
+
+> Response() 构造方法接受两个可选参数—response的数据体和一个初始化对象`option`
+
+`Response`用得比较多的是用于验证返回的属性：
+
+- Response.status — 整数(默认值为200) 为response的状态码.
+- Response.statusText — 字符串(默认值为"OK"),该值与HTTP状态码消息对应.
+- Response.ok — 如上所示, 该属性是来检查response的状态是否在200-299(包括200,299)这个范围内.该属性返回一个Boolean值.
+- Response.headers — 响应头
+
+
+
+### body的处理
+
+`Request`和`Response`都实现了body接口，就是请求体和响应体，对于body，有以下可以用于处理的方法：
+
+- arrayBuffer()
+- blob()
+- json()
+- text()
+- formData()
+
+> 这些方法返回Promise对象，可以直接return出来在下一个then接受结果数据
