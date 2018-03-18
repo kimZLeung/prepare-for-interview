@@ -60,7 +60,9 @@
 
 ##### 数据上
 
-> React 的 state 是不可变（immutable）的（React中是通过比较当前state和前一个state来决定何时在DOM中进行重渲染以及渲染的内容，因此需要不可变的state）；Vue中的数据是可变（mutated）的，Vue 由 data 进行驱动，所以同样的操作看起来更加简洁。
+> React官方建议把State当作是不可变对象（immutable）的（出于性能考虑，当对象组件状态都是不可变对象时，我们在组件的`shouldComponentUpdate`方法中，仅需要比较状态的引用就可以判断状态是否真的改变，从而避免不必要的`render`调用。）；Vue中的数据是可变（mutated）的，Vue 由 data 进行驱动，所以同样的操作看起来更加简洁。
+
+
 
 
 
@@ -73,6 +75,27 @@
 > 对于React而言，每当应用的状态被改变时，全部子组件都会重新渲染。当然，这可以通过`shouldComponentUpdate`这个生命周期方法来进行控制
 >
 > 而Vue在渲染过程中，会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树
+
+
+
+##### 更新方面
+
+> 虽然两个框架都集成了`Virtual DOM`，但是他们的DOM更新也是有差异的
+>
+> React的一般调用`setState`更新组件的State，从而触发render更新，然而调用render函数可能会导致这个组件下的所有子组件也调用render函数进行重新构建（即使这个组件的渲染完全没有改变），所以我们可以通过`shouldComponentUpdate`来阻止组件的更新，从而进行性能优化
+>
+> 而Vue一般来说不需要，因为Vue底层是用`setter`和`getter`访问器属性实现MVVM绑定的。
+>
+> `getter`: 主要是添加订阅者,维护一个订阅者数组,return val
+> `setter`: view => model(输入而改变vm中的data数据), model => view(dep.notify()去遍历所有的订阅者,update数据,从而改变相关的文本节点数据)
+>
+> 所以Vue采用依赖追踪，默认就是优化状态，并不会有多余的重新组件渲染
+
+
+
+##### 上手
+
+> Vue项目能不需要转译直接使用在浏览器中， 而react更多的依赖jsx和class等ES6属性。
 
 
 
