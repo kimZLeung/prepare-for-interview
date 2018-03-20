@@ -48,3 +48,26 @@ WebStorage的优点
 - **减少网络流量**：数据保存在本地，避免重新向服务器请求数据，从而避免了不必要的数据请求，因此减少网络流量
 - **快速显示数据**：由于数据临时保存在本地，从而不用发送请求去服务器端获取，这样可以快速的读取数据，提供了性能
 
+
+
+
+## cookies的属性
+
+- `name` ：要创建或覆盖的cookie的名字
+- `value`：cookie的值
+- `max-age` ：[`最大年龄`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie#new-cookie_max-age)的秒数 (一年为31536e3， 永不过期的cookie为[`Infinity`](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Infinity)) 
+- `expires`：过期时间的[`GMTString`](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Date/toGMTString)格式或`Date对象`，不指定则为会话期`cookie`
+- `path` ：例如 '/', '/mydir'。 如果没有定义，默认为当前文档位置的路径。([`string`](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String) or [`null`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null))。路径必须为绝对路径
+- `domain` ：例如 'example.com'， '.example.com' (包括所有子域名), 'subdomain.example.com'。如果没有定义，默认为当前文档位置的路径的域名部分
+- `secure` ：cookie只会被https传输
+- `HttpOnly`： 通过JavaScript的 [`Document.cookie`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie) API无法访问
+
+
+
+> cookie可以指定一个特定的过期时间（`Expires`）或有效期（`Max-Age`）。不指定的话则只在会话期有效
+>
+> cookie的作用域由`Domain` 和 `Path` 标识。
+>
+> - `Domain` 标识指定了哪些主机可以接受Cookie。如果不指定，默认为[当前文档的主机](https://developer.mozilla.org/en-US/docs/Web/API/Document/location)（**不包含子域名**）。如果指定了`Domain`，则一般包含子域名。
+> - `Path` 标识指定了主机下的哪些路径可以接受Cookie（该URL路径必须存在于请求URL中）。以字符 `%x2F` ("/") 作为路径分隔符，子路径也会被匹配。
+

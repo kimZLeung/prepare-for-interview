@@ -173,6 +173,8 @@ console.log(iterator.next());
 
 
 
+
+
 ### Number
 
 - Number.isFinite：如果参数类型不是数值，`Number.isFinite`一律返回`false`
@@ -198,6 +200,8 @@ console.log(iterator.next());
 
 
 
+
+
 ### String
 
 - ''.codePointAt：和charCodeAt有点相似，不过这个函数可以将占4位的字码正确返回
@@ -207,6 +211,37 @@ console.log(iterator.next());
 - ''.repeat：表示使用实例字符串重复几次，传入的参数表示重复的次数，向下取整
 - ''.padStart：头部补全，第一个参数用来指定字符串的最小长度
 - ''.padEnd：尾部补全，第一个参数用来指定字符串的最小长度
+
+
+
+
+### Proxy
+
+用法
+
+```js
+var person = {
+  name: "张三"
+};
+
+var proxy = new Proxy(person, {
+  get: function(target, property) {
+    if (property in target) {
+      return target[property];
+    } else {
+      throw new ReferenceError("Property \"" + property + "\" does not exist.");
+    }
+  }
+});
+
+proxy.name // "张三"
+proxy.age // 抛出一个错误
+```
+
+可以通过proxy一个对象，来拦截本来通过对象所做的一些操作
+
+值得注意的是：通过`Proxy`去代理返回的对象去访问原对象的方法时，内部的`this`值指向会发生变化
+
 
 
 
@@ -234,3 +269,120 @@ console.log(iterator.next());
 2. 修改某些`Object`方法的返回结果，让其变得更合理。
 3. 让`Object`操作都变成函数行为
 4. `Reflect`对象的方法与`Proxy`对象的方法一一对应，只要是`Proxy`对象的方法，就能在`Reflect`对象上找到对应的方法。也就是说，不管`Proxy`怎么修改默认行为，你总可以在`Reflect`上获取默认行为。
+
+
+
+### Async函数
+
+- Async函数返回Promise对象
+- Async返回的Promise对象。必须等到内部所有`await`命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到`return`语句或者抛出错误。
+- await命令后面不是接着一个Promise对象时，会把它用Promise.resolve()返回。
+- await命令后面的Promise一旦reject，整个`async`函数都会中断执行。并且可以在后续的catch函数中捕获到reject的参数，但是可以通过`try...catch`在`Async`函数内部捕获，因为这就不会给机会自动执行器去捕获并`reject`掉整个`Promise`。
+- 这和实现原理相关，因为上一个Promise是reject的话，下一个不会再继续`next`，而是直接`throw`
+
+```js
+// 类似Generator的自动执行器
+function spawn (gen) {
+	return new Promise((res, rej) => {
+		const g = gen()
+		function step (nextF) {
+			let next
+			try {
+				next = nextF()
+			} catch (e) {
+				rej(e)
+			}
+			if (next.done === true) {
+				return res(next.value)
+			}
+			Promise.resolve(next.value).then((v) => {
+				step(function () { return g.next(v) })
+			}, (e) => {
+				step(function () { return g.throw(e) })
+			})
+		}
+		step(() => { return g.next(undefined) })
+	})
+}
+```
+
+
+
+
+
+### Generator
+
+- `Generator.prototype.next()`
+- `Generator.prototype.throw()`：throw语句可以在`Generator`函数内部被捕获，就算`Generator`已经执行完毕，还是可以抛出错误
+- `Generator.prototype.return()`：如果`Generator`函数内部有`try...finally`语句，return语句需要等到finally代码块执行完才能return。就算`Generator`已经执行完毕，还是可以返回值，而且done为true
+
+这三个方法实际上在做同一件事情，就是恢复`Generator`函数的执行，并且使用语句替换掉`yield`语句
+
+```js
+// next
+const g = function* (x, y) {
+  let result = yield x + y;
+  return result;
+};
+
+const gen = g(1, 2);
+gen.next(); // Object {value: 3, done: false}
+
+gen.next(1); // Object {value: 1, done: true}
+// 相当于将 let result = yield x + y
+// 替换成 let result = 1;
+
+// throw
+gen.throw(new Error('出错了')); // Uncaught Error: 出错了
+// 相当于将 let result = yield x + y
+// 替换成 let result = throw(new Error('出错了'));
+
+gen.return(2); // Object {value: 2, done: true}
+// 相当于将 let result = yield x + y
+// 替换成 let result = return 2;
+```
+
+
+
+`yield*`后面跟一个可遍历的对象，比如`Generator`执行返回的对象，或者数组等原生部署有`[Symbol.iterator]`的对象。作用是可以通过一次又一次的`next`把可遍历对象拆开
+
+`Generator`函数内部的`this`值指向（不知道指向哪里），但是一定不会指向由它生成的可遍历对象，而且不能通过new调用`Generator`函数，所以在`Generator`里面指定this赋值并没有什么用。
+
+
+
+### Decorator
+
+```js
+@decorator
+class A {}
+
+// 等同于
+
+class A {}
+A = decorator(A) || A;
+```
+
+修饰器对类的行为的改变，是代码编译时发生的，而不是在运行时
+
+
+
+方法的修饰
+
+```
+function readonly(target, name, descriptor){
+  // descriptor对象原来的值如下
+  // {
+  //   value: specifiedFunction,
+  //   enumerable: false,
+  //   configurable: true,
+  //   writable: true
+  // };
+  descriptor.writable = false;
+  return descriptor;
+}
+```
+
+
+### 箭头函数
+
+this绑定为词法作用域上的this

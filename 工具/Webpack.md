@@ -30,7 +30,7 @@
 ## webpack和gulp、grunt的比较
 - Gulp和Grunt也是在项目中写一个配置文件。指明Gulp和Grunt对项目文件的操作（编译，组合，压缩等操作）然后运行这个工具进行对文件的压缩
 - 但是webpack的工作方式并不是这样的。
-- webpack会通过loaders来处理文件之间的相互依赖（因为webpack提供了模块化的管理模式）实现按需加载。最后会打包成一个JS文件（Bundled.js）
+- webpack会通过loaders来处理文件之间的相互依赖（因为webpack提供了模块化的管理模式）实现按需加载。最后会打包成一个JS文件（Bundle.js）
 
 ---
 ## webpack的externals
@@ -38,44 +38,50 @@
 - externals对象可以实现不把一些外部库也打包进来时用的（因为JQ之类的库打包一次特久）
 - 所以我们可以这样做
 
-        //webpack.config.js
-        module.exports = {
-            externals: {
-              'react': 'React' // 前面的那个键是供别的模块引入的时候用的
-            },
-            //...
-        }
+    ```js
+    //webpack.config.js
+    module.exports = {
+        externals: {
+          'react': 'React' // 前面的那个键是供别的模块引入的时候用的
+        },
+        //...
+    }
+    ```
 
 
-        // app.html
-        // ...
-        <script src="react.min.js" />
-        <script src="bundle.js" />
+```js
+    // app.html
+    // ...
+    <script src="react.min.js" />
+    <script src="bundle.js" />
 
 
-        // 某个被打包的模块
-        // commonJS
-        var react = require('react');
-        // ES6
-        import react from 'react';
+    // 某个被打包的模块
+    // commonJS
+    var react = require('react');
+    // ES6
+    import react from 'react';
+```
 
 ---
 ## 自动挂载插件 ProvidePlugin
 - 上面这个externals配置属性可以不把externals的东西不打包进来bundle.js里面
 - 区别于这个，这个插件的作用是这样用的
 
-        // webpack.config.js
-        module.exports = {
-            plugins:[{
-                 $: "jquery",
-            }],
-            // ...
-        }
-        
-        // a.js (随便一个模块)
-        // 不需要 var $ = require('./../../xxoo');  直接用
-        
-        $('xxoo').html('<h1>Hello 世界</h1>');
+    ```js
+    // webpack.config.js
+    module.exports = {
+        plugins:[{
+             $: "jquery",
+        }],
+        // ...
+    }
+
+    // a.js (随便一个模块)
+    // 不需要 var $ = require('./../../xxoo');  直接用
+
+    $('xxoo').html('<h1>Hello 世界</h1>');
+    ```
 
 - jq依旧会打包进去。
 
@@ -124,35 +130,24 @@
 经过多次试验后来发现：
 
 - 最简单的方式就是`webpack-dev-server --inline --hot`加上`--hot`这个参数自动帮你在插件里加入`HotModuleReplacementPlugin`，十分轻松愉快。
-- (以前版本可行的做法)不写参数，直接在你的`config`文件里面的`plugins`数组加入棒棒的`HotModuleReplacementPlugin`，直接启用`hot`模式，不使用参数，直接改写入口文件，比如：然后直接`webapck-dev-server`
+- 或者不加这个参数，直接手动加插件和配置参数
 
-```
-entry: [
-    // 'webpack-dev-server/client?http://127.0.0.1:8080',  // 加入inline配置
-    // 'webpack/hot/only-dev-server',                      // 加入hot配置
-    './index.js'
-  ],
-
+```js
 // 插件写上
 plugins: [
     new webpack.HotModuleReplacementPlugin()
 ],
+// 配置参数
 devServer: {
     hot: true
 }
 ```
-
-个人认为第二种方式有点...太过麻烦，而且`webpack-dev-server`现在的版本默认会有`GET "http://localhost:8888/sockjs-node/info?t=1506348178939".`也就是默认开启了`inline`模式。这样加入的话只会开启两个inline模式，也就是每次刷新文件都会有两次xhr请求，这样不好。
-
-而且最麻烦的是不知道为什么这样做无法启用HMR。（`webpack-dev-server`如入无人之境不过可能是我的问题）
 
 ---
 
 ## 使用webpack-dev-middleware和webpack-hot-middleware自己搭建热部署服务器
 
 如果说`webpack-dev-server`是别人封好的轮子，哇好麻烦好多坑，都不知道什么鬼操作。那我们可以自己凑一个热部署服务器。虽然没`webpack-dev-server`这么厉害
-
-之前我还在纠结这个`HotModuleReplacementPlugin`有什么用，感觉完全没用，因为用于`webpack-dev-server`的时候无法开启热部署。但是如果我们想使用这两个中间件来自己搭建热部署服务器的时候，我们同样需要使用这个插件进行配置
 
 ```
 entry: ['webpack-hot-middleware/client', './index.js'],
@@ -318,3 +313,10 @@ ifBooleanArg("hot", function() {
    - 各模块进行 doBlock 后，把 module 的最终代码循环添加到 source 中。一个 source 对应着一个 asset 对象，asset对象保存了单个文件的文件名( name )和最终代码( value )。
 
 9. 调用 Compiler 中的 `emitAssets()` ，按照 output 中的配置项将文件输出到了对应的 path 中
+
+
+
+## Loader和Plugin
+
+- loader 用于加载某些资源文件。 因为webpack 本身只能打包commonjs规范的js文件，对于其他资源例如 css，图片，或者其他的语法集，比如 jsx， coffee，是没有办法加载的。 这就需要对应的loader将资源转化，加载进来。从字面意思也能看出，loader是用于加载的，它作用于一个个文件上。
+- plugin 用于扩展webpack的功能。它直接作用于 webpack，扩展了它的功能。当然loader也是变相的扩展了 webpack ，但是它只专注于转化文件（transform）这一个领域。而plugin的功能更加的丰富，而不仅局限于资源的加载。
