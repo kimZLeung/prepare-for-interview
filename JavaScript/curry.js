@@ -1,3 +1,4 @@
+// 极简版
 const curry = fn => {
   const curried = (...args) => args.length >= fn.length ?
     fn.call(this, ...args) :

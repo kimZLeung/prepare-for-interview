@@ -1,4 +1,4 @@
-### 当我们 new 一个类的时候 都发生了什么
+### 当我们 `new` 一个类的时候 都发生了什么
 
 ```js
 function _new(func) {
@@ -14,7 +14,7 @@ function _new(func) {
 
 ### 防止忘记加 `new` 的方法
 
-```
+```js
 function Foo(){ 
   // 如果忘了使用关键字，这一步骤会悄悄帮你修复这个问题 
   if ( !(this instanceof Foo) ) 
@@ -23,3 +23,13 @@ function Foo(){
   // 构造函数的逻辑继续…… 
 }
 ```
+### `Object.create()`干了什么
+
+```js
+Object._create = (o) => {
+    let Fn = function() {}; // 临时的构造函数
+    Fn.prototype = o;
+    return new Fn;
+}
+```
+
