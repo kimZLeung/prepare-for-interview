@@ -97,7 +97,57 @@ HTTP/1.1 100 continue
 
 > 因为部分功能性状态码需要由服务器维护人员显式根据需求设定，没有设定的话则又HTTP默认会变为200 OK或者404 Not Found或者500 Internal Server Error，这都是HTTP通过一些内置的判断生成的默认值。所以有时候，返回的状态码和响应时错误的，比如有时候服务器内部发生错误，但是状态码依旧返回200 OK。因为状态码有时候会通过HTTP默认设置，但是真实情况并不是这样子的，而在服务器那边并没有显示设定状态码导致了这种情况。
 
----
+
+
+## HTTP常见头部
+
+**请求头：**
+
+- Accept: 接收类型，表示浏览器支持的MIME类型（对标服务端返回的Content-Type）
+- Accept-Encoding：浏览器支持的压缩类型,如gzip等,超出类型不能接收
+- Content-Type：客户端发送出去实体内容的类型
+- Cache-Control: 指定请求和响应遵循的缓存机制，如no-cache
+- If-Modified-Since：对应服务端的Last-Modified，用来匹配看文件是否变动，只能精确到1s之内，http1.0中
+- Expires：缓存控制，在这个时间内不会请求，直接使用缓存，http1.0，而且是服务端时间
+- Max-age：代表资源在本地缓存多少秒，有效时间内不会请求，而是使用缓存，http1.1中
+- If-None-Match：对应服务端的ETag，用来匹配文件内容是否改变（非常精确），http1.1中
+- Cookie：有cookie并且同域访问时会自动带上
+- Connection：当浏览器与服务器通信时对于长连接如何进行处理,如keep-alive
+- Host：请求的服务器URL
+- Origin：最初的请求是从哪里发起的（只会精确到端口）,Origin比Referer更尊重隐私
+- Referer：该页面的来源URL(适用于所有类型的请求，会精确到详细页面地址，csrf拦截常用到这个字段)
+- User-Agent：用户客户端的一些必要信息，如UA头部等
+
+**响应头**：
+
+- Access-Control-Allow-Headers: 服务器端允许的请求Headers
+- Access-Control-Allow-Methods: 服务器端允许的请求方法
+- Access-Control-Allow-Origin: 服务器端允许的请求Origin头部（譬如为*）
+- Content-Type：服务端返回的实体内容的类型
+- Date：数据从服务器发送的时间
+- Cache-Control：告诉浏览器或其他客户，什么环境可以安全的缓存文档
+- Last-Modified：请求资源的最后修改时间
+- Expires：应该在什么时候认为文档已经过期,从而不再缓存它
+- Max-age：客户端的本地资源应该缓存多少秒，开启了Cache-Control后有效
+- ETag：请求变量的实体标签的当前值
+- Set-Cookie：设置和页面关联的cookie，服务器通过这个头部把cookie传给客户端
+- Keep-Alive：如果客户端有keep-alive，服务端也会有响应（如timeout=38）
+- Server：服务器的一些相关信息
+
+
+
+## HTTP请求方法
+
+- GET：获取资源
+- POST：传输实体主体
+- OPTIONS：询问支持的方法
+- HEAD：获取报文首部
+- PUT：传输文件，一般用来更新资源，但是不带验证机制
+- DELETE：删除文件，但是不带验证机制
+- TRACE：追踪路径
+- CONNECT：要求用隧道协议链接代理
+
+
 
 ## HTTP协作的Web服务器
 
