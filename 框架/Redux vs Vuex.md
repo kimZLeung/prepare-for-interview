@@ -4,7 +4,7 @@
 
 **整体的数据流动是这样的：**View 发起 Action -> Dispatcher 收到 Action -> Dispatcher 通知 Stores 进行相应的更新 -> Stores 状态更新之后通知 Views 进行改变。
 
-![](E:\myGit\prepare-for-interview\框架\img\flux-diagram.jpg)
+![](.\img\flux-diagram.jpg)
 
 - **Views** 就是视图。负责渲染界面，捕获用户事件，从**Stores**获取数据。
 - **Action** 是一种行为，不同的Action传到Dispatcher会触发生成不同的数据

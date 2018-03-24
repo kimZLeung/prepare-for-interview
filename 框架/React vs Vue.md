@@ -26,9 +26,9 @@
 >
 > 值得注意的是：服务端渲染没有挂载到DOM的过程，所以组件的部分生命周期函数不会被调用
 
-![](E:\myGit\prepare-for-interview\框架\img\react-life.png)
+![](.\img\react-life.png)
 
-![](E:\myGit\prepare-for-interview\框架\img\vue-life.png)
+![](.\img\vue-life.png)
 
 ##### 配套工具
 

@@ -63,13 +63,13 @@
 
 请求报文：
 
-![](E:\myGit\prepare-for-interview\JavaScript\img\20170417103005064.jpg)
+![](.\img\20170417103005064.jpg)
 
 
 
 响应报文：
 
-![](E:\myGit\prepare-for-interview\JavaScript\img\20170417102928111.jpg)
+![](.\img\20170417102928111.jpg)
 
 #### http方法
 
