@@ -2,17 +2,13 @@
 
 #### 使用上
 
-##### React的受控表单和Vue的v-model
-
-> 对于一个表单的操作，Vue只需要一个`v-model`便可以轻松得到其中的值，而`React`来说需要把数据放到`State`里面，通过表单的`change`事件来动态`setState`自己维护数据的修改
->
-> 不仅是v-model，Vue提供的一系列`v-`指令都挺好用的
+##### Vue的`v-`指令方便开发，特别是`v-model`
 
 
 
 ##### 对于HTML上
 
-> Vue多数使用单文件组件形式开发，只需要`webpack`+`vue-loader`，模板语言写HTML轻轻松松的。React崇尚纯`JS`，对于HTML的生成上，`React`采用JSX来实现，对很多人吐槽JSX真的很丑而且写起来很难看（特别是注释的写法也难看）。但是我觉得还行，emmm还行还行
+> Vue使用模板写HTML轻轻松松的。React崇尚纯`JS`，对于HTML的生成上，`React`采用JSX来实现
 
 
 
@@ -92,6 +88,11 @@
 - 都实现了组件化，模块化
 - Vue 使用模板（数据绑定表达式采用的是和 Angular 相似的 mustache 语法，而指令（特殊的HTML属性）用来向模板添加功能）；React 不使用模板，但是借助 JSX 在 JS 中创建 DOM。
 
+
+
+
+- 不同的写法：Vue 使用模板，React 不使用模板，但是借助 JSX 在 JS 中创建 DOM。
+- React官方建议把State当作是不可变对象（immutable）的（出于性能考虑，当对象组件状态都是不可变对象时，我们在组件的`shouldComponentUpdate`方法中，仅需要比较状态的引用就可以判断状态是否真的改变，从而避免不必要的`render`调用。）；Vue中的数据是可变（mutated）的，Vue 由 data 进行驱动，所以同样的操作看起来更加简洁。
 
 
 ### React的优势
