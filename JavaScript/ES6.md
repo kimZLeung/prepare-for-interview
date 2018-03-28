@@ -91,6 +91,10 @@ console.log(typeof PersonClass2)
 
 
 
+> 声明静态方法直接在class里面使用`static`关键字，声明静态属性可以直接赋值在类上，如`person.xx = xxy`。或者使用`static`关键字。
+
+
+
 ### 默认参数
 
 ```js
