@@ -67,3 +67,10 @@
 
 > 该函数会在setState函数调用完成并且组件开始重渲染的时候被调用
 
+
+
+### 通常怎么通过props更新触发state更新
+
+> 可以在`componentWillReciveProps`里面，通过对比新旧的`props`，来利用`this.setState`来更新`state`。
+>
+> 需要注意的是，不能再`componentWillUpdate`里面调用`this.setState()`进行更新，因为这样会触发无限更新
